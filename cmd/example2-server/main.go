@@ -78,7 +78,7 @@ func main() {
 	implementation := Handler{}
 	api := operations.NewExample2API(swaggerSpec)
 	api.AuthorsGetAllAuthorsHandler = authors.GetAllAuthorsHandlerFunc(implementation.Handle) //назначаем хэндлер
-	api.AuthorsAddAuthorHandler = authors.AddAuthorHandlerFunc(implementation.Handle2)
+	api.AuthorsAddAuthorHandler = authors.AddAuthorHandlerFunc(implementation.AddAuthorHandler)
 	server := restapi.NewServer(api)
 	defer server.Shutdown()
 
