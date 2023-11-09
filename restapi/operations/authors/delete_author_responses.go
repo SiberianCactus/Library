@@ -11,6 +11,51 @@ import (
 	"github.com/go-openapi/runtime"
 )
 
+// DeleteAuthorCreatedCode is the HTTP code returned for type DeleteAuthorCreated
+const DeleteAuthorCreatedCode int = 201
+
+/*
+DeleteAuthorCreated Deleted
+
+swagger:response deleteAuthorCreated
+*/
+type DeleteAuthorCreated struct {
+
+	/*
+	  In: Body
+	*/
+	Payload *DeleteAuthorCreatedBody `json:"body,omitempty"`
+}
+
+// NewDeleteAuthorCreated creates DeleteAuthorCreated with default headers values
+func NewDeleteAuthorCreated() *DeleteAuthorCreated {
+
+	return &DeleteAuthorCreated{}
+}
+
+// WithPayload adds the payload to the delete author created response
+func (o *DeleteAuthorCreated) WithPayload(payload *DeleteAuthorCreatedBody) *DeleteAuthorCreated {
+	o.Payload = payload
+	return o
+}
+
+// SetPayload sets the payload to the delete author created response
+func (o *DeleteAuthorCreated) SetPayload(payload *DeleteAuthorCreatedBody) {
+	o.Payload = payload
+}
+
+// WriteResponse to the client
+func (o *DeleteAuthorCreated) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+
+	rw.WriteHeader(201)
+	if o.Payload != nil {
+		payload := o.Payload
+		if err := producer.Produce(rw, payload); err != nil {
+			panic(err) // let the recovery middleware deal with this
+		}
+	}
+}
+
 // DeleteAuthorBadRequestCode is the HTTP code returned for type DeleteAuthorBadRequest
 const DeleteAuthorBadRequestCode int = 400
 

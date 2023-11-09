@@ -5,14 +5,108 @@ package restapi
 import (
 	"crypto/tls"
 	"net/http"
+	"sync"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/runtime/middleware"
+	"github.com/go-openapi/swag"
 
+	"books/models"
 	"books/restapi/operations"
 	"books/restapi/operations/authors"
 )
+
+type Handler struct {
+	sync.RWMutex
+	authors models.Authors
+	nextId  int64
+}
+
+func (auth *Handler) Handle(authors.GetAllAuthorsParams) middleware.Responder {
+	auth.RLock()
+	defer auth.RUnlock()
+
+	allAuthors := make(models.Authors, 0, len(auth.authors))
+	for _, task := range auth.authors {
+		allAuthors = append(allAuthors, task)
+	}
+
+	// return &authors.GetAllAuthorsDefault{
+	// 	Payload: &models.Error{
+	// 		Code:    swag.Int64(http.StatusBadRequest),
+	// 		Message: swag.String("Bad Request"),
+	// 	},
+	// }
+
+	return &authors.GetAllAuthorsOK{
+		Payload: allAuthors,
+	}
+}
+
+func (auth *Handler) AddAuthorHandler(request authors.AddAuthorParams) middleware.Responder {
+	author := models.Author{
+		AuthorID: auth.nextId,
+		Name:     request.Body.Name,
+		Surname:  request.Body.Surname,
+	}
+
+	if author.Name == nil || *author.Name == "" {
+		return &authors.GetAllAuthorsDefault{
+			Payload: &models.Error{
+				Code:    swag.Int64(http.StatusBadRequest),
+				Message: swag.String("Bad Request"),
+			},
+		}
+	}
+
+	auth.authors = append(auth.authors, &author)
+	auth.nextId++
+	return &authors.AddAuthorCreated{
+		Payload: &authors.AddAuthorCreatedBody{
+			ID: author.AuthorID,
+		},
+	}
+}
+
+func (auth *Handler) GetAuthorIdHandler(request authors.GetAuthorByIDParams) middleware.Responder {
+	auth.RLock()
+	defer auth.RUnlock()
+
+	for _, task := range auth.authors {
+		if task.AuthorID == request.AuthorID {
+			return &authors.GetAuthorByIDOK{
+				Payload: &models.Author{
+					AuthorID: request.AuthorID,
+					Name:     task.Name,
+					Surname:  task.Surname,
+				},
+			}
+		}
+	}
+	return &authors.GetAuthorByIDNotFound{
+		Payload: &authors.GetAuthorByIDNotFoundBody{
+			Message: "Author is not found",
+		},
+	}
+}
+
+func (auth *Handler) DelAuthorHandler(request authors.DeleteAuthorParams) middleware.Responder {
+	auth.Lock()
+	defer auth.Unlock()
+
+	for ind, task := range auth.authors {
+		if task.AuthorID == request.AuthorID {
+			auth.authors = append(auth.authors[:ind], auth.authors[ind+1:]...)
+			break
+		}
+	}
+	return &authors.DeleteAuthorCreated{
+		Payload: &authors.DeleteAuthorCreatedBody{
+			ID: request.AuthorID,
+		},
+	}
+}
 
 //go:generate swagger generate server --target ..\..\NewProj --name Example2 --spec ..\swagger.yaml --principal interface{}
 
@@ -21,7 +115,12 @@ func configureFlags(api *operations.Example2API) {
 }
 
 func configureAPI(api *operations.Example2API) http.Handler {
-	// configure the api here
+	// configure the api here\
+	implementation := Handler{}
+	api.AuthorsGetAllAuthorsHandler = authors.GetAllAuthorsHandlerFunc(implementation.Handle) //назначаем хэндлер
+	api.AuthorsAddAuthorHandler = authors.AddAuthorHandlerFunc(implementation.AddAuthorHandler)
+	api.AuthorsDeleteAuthorHandler = authors.DeleteAuthorHandlerFunc(implementation.DelAuthorHandler)
+	api.AuthorsGetAuthorByIDHandler = authors.GetAuthorByIDHandlerFunc(implementation.GetAuthorIdHandler)
 	api.ServeError = errors.ServeError
 
 	// Set your custom logger if needed. Default one is log.Printf

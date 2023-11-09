@@ -65,6 +65,11 @@ AddAuthorMethodNotAllowed Invalid input
 swagger:response addAuthorMethodNotAllowed
 */
 type AddAuthorMethodNotAllowed struct {
+
+	/*
+	  In: Body
+	*/
+	Payload *AddAuthorMethodNotAllowedBody `json:"body,omitempty"`
 }
 
 // NewAddAuthorMethodNotAllowed creates AddAuthorMethodNotAllowed with default headers values
@@ -73,10 +78,25 @@ func NewAddAuthorMethodNotAllowed() *AddAuthorMethodNotAllowed {
 	return &AddAuthorMethodNotAllowed{}
 }
 
+// WithPayload adds the payload to the add author method not allowed response
+func (o *AddAuthorMethodNotAllowed) WithPayload(payload *AddAuthorMethodNotAllowedBody) *AddAuthorMethodNotAllowed {
+	o.Payload = payload
+	return o
+}
+
+// SetPayload sets the payload to the add author method not allowed response
+func (o *AddAuthorMethodNotAllowed) SetPayload(payload *AddAuthorMethodNotAllowedBody) {
+	o.Payload = payload
+}
+
 // WriteResponse to the client
 func (o *AddAuthorMethodNotAllowed) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
 
-	rw.Header().Del(runtime.HeaderContentType) //Remove Content-Type on empty responses
-
 	rw.WriteHeader(405)
+	if o.Payload != nil {
+		payload := o.Payload
+		if err := producer.Produce(rw, payload); err != nil {
+			panic(err) // let the recovery middleware deal with this
+		}
+	}
 }

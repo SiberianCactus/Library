@@ -94,3 +94,40 @@ func (o *AddAuthorCreatedBody) UnmarshalBinary(b []byte) error {
 	*o = res
 	return nil
 }
+
+// AddAuthorMethodNotAllowedBody add author method not allowed body
+//
+// swagger:model AddAuthorMethodNotAllowedBody
+type AddAuthorMethodNotAllowedBody struct {
+
+	// message
+	Message string `json:"message,omitempty"`
+}
+
+// Validate validates this add author method not allowed body
+func (o *AddAuthorMethodNotAllowedBody) Validate(formats strfmt.Registry) error {
+	return nil
+}
+
+// ContextValidate validates this add author method not allowed body based on context it is used
+func (o *AddAuthorMethodNotAllowedBody) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
+	return nil
+}
+
+// MarshalBinary interface implementation
+func (o *AddAuthorMethodNotAllowedBody) MarshalBinary() ([]byte, error) {
+	if o == nil {
+		return nil, nil
+	}
+	return swag.WriteJSON(o)
+}
+
+// UnmarshalBinary interface implementation
+func (o *AddAuthorMethodNotAllowedBody) UnmarshalBinary(b []byte) error {
+	var res AddAuthorMethodNotAllowedBody
+	if err := swag.ReadJSON(b, &res); err != nil {
+		return err
+	}
+	*o = res
+	return nil
+}

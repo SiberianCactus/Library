@@ -90,7 +90,14 @@ func init() {
             }
           },
           "405": {
-            "description": "Invalid input"
+            "description": "Invalid input",
+            "schema": {
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
           }
         }
       }
@@ -124,10 +131,24 @@ func init() {
             }
           },
           "400": {
-            "description": "Invalid ID supplied"
+            "description": "Invalid ID supplied",
+            "schema": {
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
           },
           "404": {
-            "description": "Author not found"
+            "description": "Author not found",
+            "schema": {
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
           }
         }
       },
@@ -151,6 +172,16 @@ func init() {
           }
         ],
         "responses": {
+          "201": {
+            "description": "Deleted",
+            "schema": {
+              "properties": {
+                "id": {
+                  "type": "integer"
+                }
+              }
+            }
+          },
           "400": {
             "description": "Invalid ID supplied"
           },
@@ -279,7 +310,14 @@ func init() {
             }
           },
           "405": {
-            "description": "Invalid input"
+            "description": "Invalid input",
+            "schema": {
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
           }
         }
       }
@@ -313,10 +351,24 @@ func init() {
             }
           },
           "400": {
-            "description": "Invalid ID supplied"
+            "description": "Invalid ID supplied",
+            "schema": {
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
           },
           "404": {
-            "description": "Author not found"
+            "description": "Author not found",
+            "schema": {
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
           }
         }
       },
@@ -340,6 +392,16 @@ func init() {
           }
         ],
         "responses": {
+          "201": {
+            "description": "Deleted",
+            "schema": {
+              "properties": {
+                "id": {
+                  "type": "integer"
+                }
+              }
+            }
+          },
           "400": {
             "description": "Invalid ID supplied"
           },

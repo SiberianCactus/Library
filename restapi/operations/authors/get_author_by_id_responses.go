@@ -67,6 +67,11 @@ GetAuthorByIDBadRequest Invalid ID supplied
 swagger:response getAuthorByIdBadRequest
 */
 type GetAuthorByIDBadRequest struct {
+
+	/*
+	  In: Body
+	*/
+	Payload *GetAuthorByIDBadRequestBody `json:"body,omitempty"`
 }
 
 // NewGetAuthorByIDBadRequest creates GetAuthorByIDBadRequest with default headers values
@@ -75,12 +80,27 @@ func NewGetAuthorByIDBadRequest() *GetAuthorByIDBadRequest {
 	return &GetAuthorByIDBadRequest{}
 }
 
+// WithPayload adds the payload to the get author by Id bad request response
+func (o *GetAuthorByIDBadRequest) WithPayload(payload *GetAuthorByIDBadRequestBody) *GetAuthorByIDBadRequest {
+	o.Payload = payload
+	return o
+}
+
+// SetPayload sets the payload to the get author by Id bad request response
+func (o *GetAuthorByIDBadRequest) SetPayload(payload *GetAuthorByIDBadRequestBody) {
+	o.Payload = payload
+}
+
 // WriteResponse to the client
 func (o *GetAuthorByIDBadRequest) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
 
-	rw.Header().Del(runtime.HeaderContentType) //Remove Content-Type on empty responses
-
 	rw.WriteHeader(400)
+	if o.Payload != nil {
+		payload := o.Payload
+		if err := producer.Produce(rw, payload); err != nil {
+			panic(err) // let the recovery middleware deal with this
+		}
+	}
 }
 
 // GetAuthorByIDNotFoundCode is the HTTP code returned for type GetAuthorByIDNotFound
@@ -92,6 +112,11 @@ GetAuthorByIDNotFound Author not found
 swagger:response getAuthorByIdNotFound
 */
 type GetAuthorByIDNotFound struct {
+
+	/*
+	  In: Body
+	*/
+	Payload *GetAuthorByIDNotFoundBody `json:"body,omitempty"`
 }
 
 // NewGetAuthorByIDNotFound creates GetAuthorByIDNotFound with default headers values
@@ -100,10 +125,25 @@ func NewGetAuthorByIDNotFound() *GetAuthorByIDNotFound {
 	return &GetAuthorByIDNotFound{}
 }
 
+// WithPayload adds the payload to the get author by Id not found response
+func (o *GetAuthorByIDNotFound) WithPayload(payload *GetAuthorByIDNotFoundBody) *GetAuthorByIDNotFound {
+	o.Payload = payload
+	return o
+}
+
+// SetPayload sets the payload to the get author by Id not found response
+func (o *GetAuthorByIDNotFound) SetPayload(payload *GetAuthorByIDNotFoundBody) {
+	o.Payload = payload
+}
+
 // WriteResponse to the client
 func (o *GetAuthorByIDNotFound) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
 
-	rw.Header().Del(runtime.HeaderContentType) //Remove Content-Type on empty responses
-
 	rw.WriteHeader(404)
+	if o.Payload != nil {
+		payload := o.Payload
+		if err := producer.Produce(rw, payload); err != nil {
+			panic(err) // let the recovery middleware deal with this
+		}
+	}
 }
